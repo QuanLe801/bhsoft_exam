@@ -2,12 +2,14 @@
 'use client';
 import { Button, Form, Input, notification } from 'antd';
 import type { FormProps } from 'antd';
-import React, { useState } from 'react';
-import Typography from '../typography/typography';
+import React from 'react';
+import Typography from '../../typography/typography';
 import styled from 'styled-components';
-import login from '../actions/auth/login';
 import { useRouter } from 'next/navigation';
-import { FieldType } from '../types/LoginInterface';
+import { FieldType } from '../../../types/LoginInterface';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '@/actions/userActions';
+import { RootState } from '@/reducers/rootReducer';
 
 const StyledFormItem = styled(Form.Item<FieldType>)`
   .ant-form-item-required {
@@ -28,36 +30,20 @@ const StyledLoginContainer = styled.section`
 `;
 
 export default function Login() {
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const { data, loading, message } = useSelector(
+    (state: RootState) => state.user,
+  );
   const [api, contextHolder] = notification.useNotification();
   const router = useRouter();
 
-  const onFinish: FormProps<FieldType>['onFinish'] = async values => {
-    setLoading(true);
-
-    await login({
-      username: values.username as string,
-      password: values.password as string,
-    })
-      .then(res => {
-        api.success({
-          message: 'Successfully!',
-          description: `Welcome back ${res?.data?.username}`,
-        });
-        setLoading(false);
-
-        setTimeout(() => {
-          router.push('/');
-        }, 1000);
-      })
-      .catch((error: any) => {
-        setLoading(false);
-        api.error({
-          message: error.message,
-          description: 'Username or password is incorrect!',
-        });
-        console.log(error);
-      });
+  const onFinish: FormProps<FieldType>['onFinish'] = values => {
+    dispatch(
+      login({
+        username: values.username as string,
+        password: values.password as string,
+      }),
+    );
   };
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = () => {
@@ -65,6 +51,10 @@ export default function Login() {
       message: 'Something went wrong!',
     });
   };
+
+  if (data) {
+    router.push('/');
+  }
 
   return (
     <StyledLoginContainer>
@@ -111,6 +101,11 @@ export default function Login() {
           </Button>
         </Form.Item>
       </Form>
+      {message && (
+        <Typography variant="h3" align="center">
+          {message}
+        </Typography>
+      )}
     </StyledLoginContainer>
   );
 }
