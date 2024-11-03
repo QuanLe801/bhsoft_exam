@@ -1,7 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const initialState = {
+
+import { productsInterface } from '@/types/ProductInterface';
+
+interface CartState {
+  cartProducts: productsInterface[];
+  loading: boolean;
+  error: any;
+}
+
+const initialState: CartState = {
   loading: false,
-  cartProducts: null,
+  cartProducts: [],
   error: null,
 };
 
@@ -19,14 +28,14 @@ const cartReducer = (
       return {
         ...state,
         loading: false,
-        products: null,
+        cartProducts: action.payload.data,
       };
     case 'GET_CART_FAILURE':
       return {
         ...state,
         loading: false,
         error: action.error,
-        products: null,
+        cartProducts: null,
       };
     case 'ADD_TO_CART_REQUEST':
       return {
@@ -37,14 +46,20 @@ const cartReducer = (
       return {
         ...state,
         loading: false,
-        products: action.payload.data,
+        cartProducts: state.cartProducts.concat(action.payload.data),
+      };
+    case 'ADD_TO_CART_EXIST':
+      return {
+        ...state,
+        loading: false,
+        // cartProducts: action.payload.data,
       };
     case 'ADD_TO_CART_FAILURE':
       return {
         ...state,
         loading: false,
         error: action.error,
-        products: null,
+        cartProducts: null,
       };
     default:
       return state;

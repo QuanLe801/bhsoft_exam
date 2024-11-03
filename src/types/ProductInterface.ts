@@ -4,6 +4,7 @@ export interface productsInterface {
   brand: string;
   thumbnail: string;
   price: number;
+  quantity?: number;
 }
 
 export interface productsQueryInterface {

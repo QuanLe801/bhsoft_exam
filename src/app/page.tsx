@@ -39,7 +39,6 @@ const StyledContainerWrapper = styled.div`
 export default function Home() {
   const dispatch = useDispatch();
   const { loading } = useSelector((state: RootState) => state.cart);
-  const userId = useSelector((state: RootState) => state.user);
   const [api, contextHolder] = notification.useNotification();
   const [page, setPage] = useState(1);
   const limit = 10;
@@ -72,8 +71,15 @@ export default function Home() {
     setPage(page + 1);
   };
 
-  const addToCart = async (id: number, quantity: 1) => {
-    await dispatch(addToCartAsync({ id, quantity }, userId?.data?.id));
+  const addToCart = async (product: productsInterface, quantity: number) => {
+    const payload = {
+      title: product.title,
+      price: product.price.toString(),
+      brand: product.brand as string,
+      thumbnail: product.thumbnail as string,
+      id: product.id.toString(),
+    };
+    await dispatch(addToCartAsync({ ...payload }, quantity));
     api.success({
       message: 'Add to cart sucessfully!',
     });
@@ -119,7 +125,7 @@ export default function Home() {
                     <Typography
                       variant="h4"
                       className="mb-0 text-white"
-                      onClick={() => addToCart(item.id, 1)}
+                      onClick={() => addToCart(item, 1)}
                     >
                       Add to cart
                     </Typography>
