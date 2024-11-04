@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface productsInterface {
   id: number;
   title: string;
   brand: string;
   thumbnail: string;
-  price: number;
+  price: any;
   quantity: number;
   idProduct?: string;
 }

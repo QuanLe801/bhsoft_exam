@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import { deleteOneCart, getCartAsync, updateCart } from '@/actions/cartActions';
 import { RootState } from '@/reducers/rootReducer';
@@ -17,16 +18,16 @@ export default function Cart() {
   const handleDecrement = (product: productsInterface) => {
     if (product.quantity <= 1) return;
     const incrementQuantity = { ...product, quantity: product.quantity - 1 };
-    dispatch(updateCart(incrementQuantity));
+    dispatch<any>(updateCart(incrementQuantity));
   };
 
   const handleIncrement = (product: productsInterface) => {
     const incrementQuantity = { ...product, quantity: product.quantity + 1 };
-    dispatch(updateCart(incrementQuantity));
+    dispatch<any>(updateCart(incrementQuantity));
   };
 
   const handleDeleteItem = (product: productsInterface) => {
-    dispatch(deleteOneCart(product));
+    dispatch<any>(deleteOneCart(product));
   };
 
   const confirmDelete = (product: productsInterface) => {
@@ -145,7 +146,7 @@ export default function Cart() {
   };
 
   useEffect(() => {
-    dispatch(getCartAsync());
+    dispatch<any>(getCartAsync());
   }, []);
 
   // getCartAsync

@@ -38,7 +38,7 @@ export default function Login() {
   const router = useRouter();
 
   const onFinish: FormProps<FieldType>['onFinish'] = values => {
-    dispatch(
+    dispatch<any>(
       login({
         username: values.username as string,
         password: values.password as string,

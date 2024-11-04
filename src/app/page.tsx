@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import { Button, Card, Col, notification, Row, Spin } from 'antd';
 import Meta from 'antd/es/card/Meta';
@@ -72,14 +73,15 @@ export default function Home() {
 
   const addToCart = async (product: productsInterface, quantity: number) => {
     setIsLoading([...isLoading, product.id]);
-    const payload = {
+    const payload: productsInterface = {
       title: product.title,
       price: product.price.toString(),
       brand: product.brand as string,
       thumbnail: product.thumbnail as string,
-      id: product.id.toString(),
+      id: product.id,
+      quantity: 1,
     };
-    await dispatch(addToCartAsync({ ...payload }, quantity));
+    await dispatch<any>(addToCartAsync({ ...payload }, quantity));
     api.success({
       message: 'Add to cart sucessfully!',
     });
