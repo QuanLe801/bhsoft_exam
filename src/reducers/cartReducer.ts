@@ -18,6 +18,7 @@ const cartReducer = (
   state = initialState,
   action: { type: string; payload: any; error: unknown },
 ) => {
+  console.log(action);
   switch (action.type) {
     case 'GET_CART_REQUEST':
       return {

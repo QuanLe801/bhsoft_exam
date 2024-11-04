@@ -25,8 +25,11 @@ export const addToCartAsync = (
     );
 
     const checkCartExist: productsInterface = dataCart.data.find(
-      (item: { id: string }) => item.id === product.id.toString(),
+      (item: { id: string }) => item.id.toString() === product.id.toString(),
     );
+    console.log('product', product);
+    console.log('dataCart', dataCart);
+    console.log('checkCartExist', checkCartExist);
 
     if (checkCartExist) {
       await axiosInstance
@@ -34,7 +37,7 @@ export const addToCartAsync = (
           `${process.env.NEXT_PUBLIC_MOCK_API}/cart/${checkCartExist.idProduct}`,
           {
             ...product,
-            quantity: checkCartExist.quantity,
+            quantity: checkCartExist.quantity + 1,
           },
         )
         .catch(error => console.log(error));
