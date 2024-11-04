@@ -1,8 +1,9 @@
 'use client';
-import { getCartAsync } from '@/actions/cartActions';
+import { deleteOneCart, getCartAsync, updateCart } from '@/actions/cartActions';
 import { RootState } from '@/reducers/rootReducer';
 import { productsInterface } from '@/types/ProductInterface';
-import { Spin, Table } from 'antd';
+import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Popover, Table } from 'antd';
 import Image from 'next/image';
 import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,7 +14,43 @@ export default function Cart() {
     (state: RootState) => state.cart,
   );
 
+  const handleDecrement = (product: productsInterface) => {
+    if (product.quantity <= 1) return;
+    const incrementQuantity = { ...product, quantity: product.quantity - 1 };
+    dispatch(updateCart(incrementQuantity));
+  };
+
+  const handleIncrement = (product: productsInterface) => {
+    const incrementQuantity = { ...product, quantity: product.quantity + 1 };
+    dispatch(updateCart(incrementQuantity));
+  };
+
+  const handleDeleteItem = (product: productsInterface) => {
+    dispatch(deleteOneCart(product));
+  };
+
+  const confirmDelete = (product: productsInterface) => {
+    return <Button onClick={() => handleDeleteItem(product)}>Yes</Button>;
+  };
+
   const columns = [
+    {
+      title: '',
+      key: 'deleteItem',
+      render: (text: string, record: productsInterface) => (
+        <>
+          <Popover
+            content={() => confirmDelete(record)}
+            title="Are you sure?"
+            trigger="click"
+          >
+            <span style={{ cursor: 'pointer' }}>
+              <DeleteOutlined />
+            </span>
+          </Popover>
+        </>
+      ),
+    },
     {
       title: 'Title',
       dataIndex: 'title',
@@ -38,7 +75,7 @@ export default function Cart() {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
-      render: (text: string) => (
+      render: (text: number) => (
         <>
           <span>{text}$</span>
         </>
@@ -48,6 +85,26 @@ export default function Cart() {
       title: 'Quantity',
       dataIndex: 'quantity',
       key: 'quantity',
+      render: (text: number, record: productsInterface) => {
+        return (
+          <div>
+            <span
+              className="me-4"
+              style={{ cursor: 'pointer' }}
+              onClick={() => handleDecrement(record)}
+            >
+              <MinusOutlined disabled={record.quantity <= 1} />
+            </span>
+            <span className="me-4">{text | 0}</span>
+            <span
+              style={{ cursor: 'pointer' }}
+              onClick={() => handleIncrement(record)}
+            >
+              <PlusOutlined />
+            </span>
+          </div>
+        );
+      },
     },
     {
       title: 'Total',
@@ -58,7 +115,9 @@ export default function Cart() {
         { quantity, price }: { quantity: number; price: string },
       ) => (
         <>
-          <span>{quantity * Number(price)}$</span>
+          <span className="text-bold">
+            {(quantity * Number(price)).toFixed(2)}$
+          </span>
         </>
       ),
     },
@@ -66,15 +125,22 @@ export default function Cart() {
 
   const totalPrice = useMemo(() => {
     let total = 0;
-    cartProducts.map((item: productsInterface) => {
-      total += Number(item.price) * (Number(item.quantity) || 0);
+    cartProducts?.map((item: productsInterface) => {
+      total += Number(item?.price) * (Number(item?.quantity) || 0);
     });
     return total.toFixed(2);
   }, [cartProducts]);
 
   const tableFooter = () => {
     return (
-      <span className="pe-5 text-end w-100 d-block">Total: {totalPrice}$</span>
+      <div className="d-flex align-items-center">
+        <div className="pe-5 text-end w-100 d-block">
+          Total: <span className="text-bold">{totalPrice} $</span>
+        </div>
+        <Button type="primary" loading={loading} disabled={loading}>
+          Pay now
+        </Button>
+      </div>
     );
   };
 
@@ -84,11 +150,12 @@ export default function Cart() {
 
   // getCartAsync
 
-  if (loading) {
-    <Spin size="large" className="mt-3 w-100 mx-auto" />;
-  }
-
   return (
-    <Table dataSource={cartProducts} columns={columns} footer={tableFooter} />
+    <Table
+      scroll={{ x: 'max-content' }}
+      dataSource={cartProducts}
+      columns={columns}
+      footer={tableFooter}
+    />
   );
 }

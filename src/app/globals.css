@@ -16,3 +16,11 @@ body {
   padding: 0;
   margin: 0;
 }
+
+.text-bold {
+  font-weight: 600;
+}
+
+.ant-popover-title {
+  min-width: auto !important;
+}

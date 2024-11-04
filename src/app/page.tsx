@@ -11,9 +11,8 @@ import Typography from './typography/typography';
 import styled from 'styled-components';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import axiosInstance from './services/apiClient';
-import { RootState } from '@/reducers/rootReducer';
 import { qs } from './utils/common';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { addToCartAsync } from '@/actions/cartActions';
 
 const StyledCardProducts = styled(Card)`
@@ -38,7 +37,7 @@ const StyledContainerWrapper = styled.div`
 
 export default function Home() {
   const dispatch = useDispatch();
-  const { loading } = useSelector((state: RootState) => state.cart);
+  const [isLoading, setIsLoading] = useState<number[]>([]);
   const [api, contextHolder] = notification.useNotification();
   const [page, setPage] = useState(1);
   const limit = 10;
@@ -72,6 +71,7 @@ export default function Home() {
   };
 
   const addToCart = async (product: productsInterface, quantity: number) => {
+    setIsLoading([...isLoading, product.id]);
     const payload = {
       title: product.title,
       price: product.price.toString(),
@@ -83,6 +83,8 @@ export default function Home() {
     api.success({
       message: 'Add to cart sucessfully!',
     });
+    const addToCartSucess = [...isLoading].filter(item => item !== product.id);
+    setIsLoading([...addToCartSucess]);
   };
 
   useEffect(() => {
@@ -104,35 +106,40 @@ export default function Home() {
           loader={<Spin size="large" className="mt-3 w-100 mx-auto" />}
         >
           <Row gutter={[24, 24]}>
-            {products?.products?.map((item: productsInterface, key: number) => (
-              <Col lg={6} md={8} key={key}>
-                <StyledCardProducts
-                  hoverable
-                  cover={
-                    <Image
-                      alt="example"
-                      src={item.thumbnail}
-                      width={240}
-                      height={240}
-                    />
-                  }
-                >
-                  <Meta title={item.title} description={item.brand} />
-                  <Typography variant="h5" className="mt-2">
-                    {item.price}$
-                  </Typography>
-                  <Button className="bg-primary" loading={loading}>
-                    <Typography
-                      variant="h4"
-                      className="mb-0 text-white"
-                      onClick={() => addToCart(item, 1)}
-                    >
-                      Add to cart
+            {products?.products?.map((item: productsInterface, key: number) => {
+              return (
+                <Col lg={6} md={8} key={key}>
+                  <StyledCardProducts
+                    hoverable
+                    cover={
+                      <Image
+                        alt="example"
+                        src={item.thumbnail}
+                        width={240}
+                        height={240}
+                      />
+                    }
+                  >
+                    <Meta title={item.title} description={item.brand} />
+                    <Typography variant="h5" className="mt-2">
+                      {item.price}$
                     </Typography>
-                  </Button>
-                </StyledCardProducts>
-              </Col>
-            ))}
+                    <Button
+                      className="bg-primary"
+                      loading={isLoading.includes(item.id)}
+                    >
+                      <Typography
+                        variant="h4"
+                        className="mb-0 text-white"
+                        onClick={() => addToCart(item, 1)}
+                      >
+                        Add to cart
+                      </Typography>
+                    </Button>
+                  </StyledCardProducts>
+                </Col>
+              );
+            })}
           </Row>
         </InfiniteScroll>
       </StyledContainerWrapper>
