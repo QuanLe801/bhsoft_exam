@@ -6,12 +6,11 @@ import { productsInterface } from '@/types/ProductInterface';
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Popover, Table } from 'antd';
 import Image from 'next/image';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function Cart() {
   const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState(true);
   const { cartProducts, loading } = useSelector(
     (state: RootState) => state.cart,
   );
@@ -147,12 +146,7 @@ export default function Cart() {
   };
 
   useEffect(() => {
-    const getData = async () => {
-      await dispatch<any>(getCartAsync());
-      setIsLoading(false);
-    };
-
-    getData();
+    dispatch<any>(getCartAsync());
   }, []);
 
   return (
@@ -161,7 +155,6 @@ export default function Cart() {
       dataSource={cartProducts}
       columns={columns}
       footer={tableFooter}
-      loading={isLoading}
     />
   );
 }

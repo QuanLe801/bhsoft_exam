@@ -22,7 +22,7 @@ export const login = (
 
       dispatch({ type: 'LOGIN_SUCCESS', payload: data });
     } catch (error) {
-      dispatch({ type: 'LOGIN_FAILURE', error });
+      dispatch({ type: 'ERROR', error });
     }
   };
 };

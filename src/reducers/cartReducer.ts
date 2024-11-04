@@ -31,13 +31,6 @@ const cartReducer = (
         loading: false,
         cartProducts: action.payload.data,
       };
-    case 'GET_CART_FAILURE':
-      return {
-        ...state,
-        loading: false,
-        error: action.error,
-        cartProducts: null,
-      };
     case 'ADD_TO_CART_REQUEST':
       return {
         ...state,
@@ -53,12 +46,6 @@ const cartReducer = (
       return {
         ...state,
         loading: false,
-      };
-    case 'ADD_TO_CART_FAILURE':
-      return {
-        ...state,
-        loading: false,
-        error: action.error,
       };
     case 'UPDATE_CART_LOCAL':
       const findCartIndex = state?.cartProducts?.findIndex(
@@ -85,12 +72,6 @@ const cartReducer = (
         ...state,
         loading: false,
       };
-    case 'UPDATE_CART_FAILURE':
-      return {
-        ...state,
-        loading: false,
-        error: action.error,
-      };
     case 'DELETE_CART_REQUEST':
       return {
         ...state,
@@ -105,12 +86,13 @@ const cartReducer = (
         loading: false,
         cartProducts: filterCartDelete,
       };
-    case 'DELETE_CART_FAILURE':
+    case 'ERROR':
       return {
         ...state,
         loading: false,
         error: action.error,
       };
+
     default:
       return state;
   }

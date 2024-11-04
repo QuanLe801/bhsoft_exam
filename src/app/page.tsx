@@ -93,10 +93,6 @@ export default function Home() {
     getData();
   }, [page]);
 
-  useEffect(() => {
-    getData();
-  }, []);
-
   return (
     <section className="container">
       {contextHolder}

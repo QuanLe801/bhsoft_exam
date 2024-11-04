@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 //This file need to replaces middleware. In order to config the axios => make it check auth before doing something
 //If an user existing ( logged ) => accept request => if not , redirect to login page
 const axiosInstance = axios.create({
+  baseURL: `${process.env.NEXT_PUBLIC_MOCK_API}`,
   // timeout: 5000,
 });
 
