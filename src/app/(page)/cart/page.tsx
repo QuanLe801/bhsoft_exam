@@ -149,8 +149,6 @@ export default function Cart() {
     dispatch<any>(getCartAsync());
   }, []);
 
-  // getCartAsync
-
   return (
     <Table
       scroll={{ x: 'max-content' }}
