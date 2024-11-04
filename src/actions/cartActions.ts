@@ -27,9 +27,6 @@ export const addToCartAsync = (
     const checkCartExist: productsInterface = dataCart.data.find(
       (item: { id: string }) => item.id.toString() === product.id.toString(),
     );
-    console.log('product', product);
-    console.log('dataCart', dataCart);
-    console.log('checkCartExist', checkCartExist);
 
     if (checkCartExist) {
       await axiosInstance
