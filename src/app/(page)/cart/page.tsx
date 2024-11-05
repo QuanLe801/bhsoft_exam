@@ -39,17 +39,15 @@ export default function Cart() {
       title: '',
       key: 'deleteItem',
       render: (text: string, record: productsInterface) => (
-        <>
-          <Popover
-            content={() => confirmDelete(record)}
-            title="Are you sure?"
-            trigger="click"
-          >
-            <span style={{ cursor: 'pointer' }}>
-              <DeleteOutlined />
-            </span>
-          </Popover>
-        </>
+        <Popover
+          content={() => confirmDelete(record)}
+          title="Are you sure?"
+          trigger="click"
+        >
+          <span style={{ cursor: 'pointer' }}>
+            <DeleteOutlined />
+          </span>
+        </Popover>
       ),
     },
     {
@@ -67,20 +65,14 @@ export default function Cart() {
       dataIndex: 'thumbnail',
       key: 'thumbnail',
       render: (thumbnail: string) => (
-        <>
-          <Image src={thumbnail} width={140} height={140} alt="image" />
-        </>
+        <Image src={thumbnail} width={140} height={140} alt="image" />
       ),
     },
     {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
-      render: (text: number) => (
-        <>
-          <span>{text}$</span>
-        </>
-      ),
+      render: (text: number) => <span>{text}$</span>,
     },
     {
       title: 'Quantity',
@@ -88,7 +80,7 @@ export default function Cart() {
       key: 'quantity',
       render: (text: number, record: productsInterface) => {
         return (
-          <div>
+          <>
             <span
               className="me-4"
               style={{ cursor: 'pointer' }}
@@ -103,7 +95,7 @@ export default function Cart() {
             >
               <PlusOutlined />
             </span>
-          </div>
+          </>
         );
       },
     },
@@ -115,11 +107,9 @@ export default function Cart() {
         text: string,
         { quantity, price }: { quantity: number; price: string },
       ) => (
-        <>
-          <span className="text-bold">
-            {(quantity * Number(price)).toFixed(2)}$
-          </span>
-        </>
+        <span className="text-bold">
+          {(quantity * Number(price)).toFixed(2)}$
+        </span>
       ),
     },
   ];
