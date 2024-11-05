@@ -3,13 +3,13 @@
 import { RootState } from '@/reducers/rootReducer';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Typography from '../typography/typography';
 import Image from 'next/image';
 import { HomeOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { Badge } from 'antd';
 import styled from 'styled-components';
 import { getCartAsync } from '@/actions/cartActions';
+import Typography from '@/app/typography/typography';
 
 const StyledShoppingCartOutlined = styled(ShoppingCartOutlined)`
   & > svg {

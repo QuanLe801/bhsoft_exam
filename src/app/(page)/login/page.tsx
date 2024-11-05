@@ -3,13 +3,13 @@
 import { Button, Form, Input, notification } from 'antd';
 import type { FormProps } from 'antd';
 import React from 'react';
-import Typography from '../../typography/typography';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
-import { FieldType } from '../../../types/LoginInterface';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '@/actions/userActions';
 import { RootState } from '@/reducers/rootReducer';
+import Typography from '@/app/typography/typography';
+import { FieldType } from '@/types/LoginInterface';
 
 const StyledFormItem = styled(Form.Item<FieldType>)`
   .ant-form-item-required {

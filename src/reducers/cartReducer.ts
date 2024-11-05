@@ -18,7 +18,6 @@ const cartReducer = (
   state = initialState,
   action: { type: string; payload: any; error: unknown },
 ) => {
-  console.log(action);
   switch (action.type) {
     case 'GET_CART_REQUEST':
       return {
@@ -49,7 +48,7 @@ const cartReducer = (
       };
     case 'UPDATE_CART_LOCAL':
       const findCartIndex = state?.cartProducts?.findIndex(
-        item => item.id == action.payload.id,
+        item => item.id.toString() === action.payload.id.toString(),
       );
       return {
         ...state,

@@ -4,17 +4,14 @@ import { Button, Card, Col, notification, Row, Spin } from 'antd';
 import Meta from 'antd/es/card/Meta';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import {
-  productsInterface,
-  productsQueryInterface,
-} from '../types/ProductInterface';
-import Typography from './typography/typography';
 import styled from 'styled-components';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import axiosInstance from './services/apiClient';
-import { qs } from './utils/common';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addToCartAsync } from '@/actions/cartActions';
+import { RootState } from '@/reducers/rootReducer';
+import { getProductAsync } from '@/actions/productsActions';
+import { productsInterface } from '@/types/ProductInterface';
+import Typography from '@/app/typography/typography';
 
 const StyledCardProducts = styled(Card)`
   img {
@@ -38,33 +35,14 @@ const StyledContainerWrapper = styled.div`
 
 export default function Home() {
   const dispatch = useDispatch();
+  const { products } = useSelector((state: RootState) => state.product);
   const [isLoading, setIsLoading] = useState<number[]>([]);
   const [api, contextHolder] = notification.useNotification();
   const [page, setPage] = useState(1);
   const limit = 10;
-  const [products, setProducts] = useState<{ products: productsInterface[] }>({
-    products: [],
-  });
 
-  const getProducts = async (values: productsQueryInterface) => {
-    const query = {
-      limit: values.limit,
-      skip: (values.page - 1) * values.limit,
-    };
-    const data = await axiosInstance.get(
-      `${process.env.NEXT_PUBLIC_API}/products?${qs(query)}`,
-    );
-
-    return data;
-  };
-
-  const getData = async () => {
-    await getProducts({ limit: limit, page: page }).then(res => {
-      setProducts({
-        ...res?.data,
-        products: products?.products.concat(res?.data?.products),
-      });
-    });
+  const getProducts = async () => {
+    dispatch<any>(getProductAsync({ limit: limit, page: page }));
   };
 
   const fetchMoreData = () => {
@@ -90,7 +68,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    getData();
+    getProducts();
   }, [page]);
 
   return (
@@ -98,13 +76,13 @@ export default function Home() {
       {contextHolder}
       <StyledContainerWrapper>
         <InfiniteScroll
-          dataLength={products?.products?.length || 0}
+          dataLength={products?.length || 0}
           next={fetchMoreData}
-          hasMore={products?.products?.length < 194}
+          hasMore={products?.length < 194}
           loader={<Spin size="large" className="mt-3 w-100 mx-auto" />}
         >
           <Row gutter={[24, 24]}>
-            {products?.products?.map((item: productsInterface, key: number) => {
+            {products?.map((item: productsInterface, key: number) => {
               return (
                 <Col lg={6} md={8} key={key}>
                   <StyledCardProducts
@@ -125,6 +103,7 @@ export default function Home() {
                     <Button
                       className="bg-primary"
                       loading={isLoading.includes(item.id)}
+                      disabled={isLoading.includes(item.id)}
                     >
                       <Typography
                         variant="h4"
